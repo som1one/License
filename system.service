@@ -1,0 +1,30 @@
+[Unit]
+Description=cKey API Gateway Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/ckey-api
+Environment="PATH=/opt/ckey-api/.venv/bin"
+ExecStart=/opt/ckey-api/.venv/bin/python /opt/ckey-api/ckey_api.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ckey-api
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/ckey-api /var/cache/ckey-api
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,28 @@
+FROM python:3.11-slim
+
+# Установка CA сертификатов для HTTPS
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Копируем файлы
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Создаем пользователя для безопасности
+RUN addgroup -g 1001 -S appuser && \
+    adduser -S -u 1001 -G appuser appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+# Экспозиция порта
+EXPOSE 8000
+
+# Команда запуска
+CMD ["uvicorn", "ckey_api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4", "--log-level", "warning"]

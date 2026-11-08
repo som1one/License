@@ -1,0 +1,64 @@
+# Команды для тестирования API Gateway
+
+## Запустить API сервер:
+```powershell
+python manager.py start
+```
+
+## Затем запустить тесты в этой же консоли:
+
+### Проверить статус:
+```powershell
+npm run check:alive
+```
+
+### Список продуктов:
+```powershell
+npm run list:products
+```
+
+### Лицензия PyCharm:
+```powershell
+npm run test:pycharm
+```
+
+### Лицензия IntelliJ IDEA:
+```powershell
+npm run test:intellij
+```
+
+### Веб-доку:
+```powershell
+npm run docs
+```
+
+## Прямые Python команды (вместо npm):
+
+```powershell
+# Статус
+python -c "import requests; r=requests.get('http://127.0.0.1:8000/api/products'); print(r.json())"
+
+# PyCharm
+python -c "import requests; r=requests.get('http://127.0.0.1:8000/api/license?product=PC&name=Test&expiry=2099-12-31&assignee=User'); print(r.json())"
+
+# IntelliJ IDEA
+python -c "import requests; r=requests.get('http://127.0.0.1:8000/api/license?product=II&name=Test&expiry=2099-12-31&assignee=User'); print(r.json())"
+
+# Документация
+start http://127.0.0.1:8000/docs
+```
+
+## URLs:
+- API: http://127.0.0.1:8000
+- Документация: http://127.0.0.1:8000/docs
+- Веб-интерфейс: quickstart.py
+
+## Коды продуктов:
+- II - IntelliJ IDEA
+- PC - PyCharm
+- A - Android Studio
+- CL - DataGrip
+- J - JetBrains Rider
+
+## Для остановки:
+Ctrl+C в консоли сервера, или запустить `python manager.py` и выбрать остановку.

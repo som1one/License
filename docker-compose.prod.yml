@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  ckey-api:
+    build: .
+    container_name: ckey-api
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '0.5'
+          memory: 128M
+    # Для production с базой данных (если нужно)
+    deploy:
+      replicas: 2
+    networks:
+      - ckey-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: ckey-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx-log:/var/log/nginx
+    depends_on:
+      - ckey-api
+    restart: unless-stopped
+    networks:
+      - ckey-network
+
+volumes:
+  nginx-log:
+
+networks:
+  ckey-network:
+    driver: bridge

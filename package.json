@@ -1,0 +1,22 @@
+{
+  "name": "pycharmlicense-api",
+  "version": "1.0.0",
+  "description": "cKey API Gateway for PyCharm License",
+  "main": "index.js",
+  "scripts": {
+    "dev": "python manager.py",
+    "manager": "python manager.py",
+    "start": "python manager.py start",
+    "stop": "python manager.py stop",
+    "test:api": "python test_api.py",
+    "check": "python quick_check.py",
+    "check:alive": "python -c \"import requests; r=requests.get('http://127.0.0.1:8000/api/products'); print('Status:', r.status_code); print('Products:', r.json())\"",
+    "test:pycharm": "python -c \"import requests; r=requests.get('http://127.0.0.1:8000/api/license?product=PC&name=Test&expiry=2099-12-31&assignee=User'); print(r.json())\"",
+    "test:intellij": "python -c \"import requests; r=requests.get('http://127.0.0.1:8000/api/license?product=II&name=Test&expiry=2099-12-31&assignee=User'); print(r.json())\"",
+    "list:products": "python -c \"import requests; r=requests.get('http://127.0.0.1:8000/api/products'); print(r.json())\"",
+    "docs": "start http://127.0.0.1:8000/docs"
+  },
+  "keywords": ["api", "license", "webhook", "fastapi", "uvicorn"],
+  "author": "",
+  "license": "MIT"
+}
