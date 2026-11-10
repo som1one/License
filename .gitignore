@@ -1,42 +1,13 @@
-# Dependencies
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-.venv/
-venv/
-ENV/
-env/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs
+*.pyc
+ja-netfilter-cache/
+pycharm_key.txt
+pycharm_license.key
+license.key
+*.html
+*.png
 *.log
-ckey_api.log
 *.pid
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Docker
-docker-compose.override.yml
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Node (npm)
-node_modules/
-package-lock.json
-*.tgz
-
-# Environment
-.env
-.env.local
+ckey_script_dump.txt
+debug_*.py
+analyze_script.py
