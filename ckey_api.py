@@ -123,6 +123,7 @@ def root():
         "endpoints": {
             "license": "POST /api/license",
             "license_raw": "POST /api/license/raw",
+            "license_v2": "POST /api/license/v2 (ckey.run-совместимый)",
             "license_worker": "POST /api/license/worker",
             "activate": "GET /api/activate/{product}",
             "activate_post": "POST /api/activate",
@@ -213,6 +214,33 @@ def create_license_raw(req: LicenseRequest):
     try:
         key = fetch_key(req.product, req.name, req.expiry, req.assignee)
         return Response(content=key, media_type="text/plain")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ---------------------------------------------------------------------------
+# ckey.run-совместимый endpoint для mentor-organizer
+# Принимает те же имена полей, что и ckey.run, отдаёт ключ с <certificate-key>
+# ---------------------------------------------------------------------------
+
+class LegacyLicenseRequest(BaseModel):
+    productCode: str
+    licenseName: str = "LeonovCare"
+    expiryDate: str = "2099-12-31"
+    assigneeName: str = ""
+
+
+@app.post("/api/license/v2")
+def create_license_v2(req: LegacyLicenseRequest):
+    # Нормализуем код продукта — берём первый из набора "PC,PSI,PCWMP" → "PC"
+    code = req.productCode.strip().upper().split(",")[0]
+    if code not in PRODUCTS:
+        raise HTTPException(status_code=400, detail=f"Invalid product: {code}")
+    try:
+        key = fetch_key(code, req.licenseName, req.expiryDate, req.assigneeName)
+        # Возвращаем в формате, который ожидает ckey_client.py
+        body = f"<certificate-key>\n{key}"
+        return Response(content=body, media_type="application/octet-stream")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -342,7 +370,7 @@ for CACHE_DIR in $TARGET_DIRS; do
     # .vmoptions — ищем в config, если нет — создаём
     VM_FILE=""
     for f in "$CONFIG_DIR"/*.vmoptions; do
-        [ -f "$f" ] && { VM_FILE="$f"; break; }
+        [ -f "$f" ] && {{ VM_FILE="$f"; break; }}
     done
     [ -z "$VM_FILE" ] && VM_FILE="$CONFIG_DIR/{product_dir}.vmoptions"
     
